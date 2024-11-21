@@ -45,7 +45,6 @@ async function findWord() {
   try {
     const datas = await fetchWords();
     for (const data of datas) {
-      console.log(data);
       if(data.word === searchInput.value){
         container.innerHTML = `
           <section class="word-container">
@@ -96,6 +95,9 @@ async function findWord() {
         searchInputContainer.classList.remove('error');
       } 
     }
+    audioBtn.addEventListener('click', () => {
+      audioBtnSound.play();
+    });
   } catch {
     if(searchInput.value === ''){
       searchInputContainer.classList.add('error');
@@ -112,19 +114,14 @@ async function findWord() {
     }
   }
   renderMeanings();
-  audioBtn.addEventListener('click', () => {
-    audioBtnSound.play();
-  });
 }
 
 async function renderMeanings() {
   try{
-    console.log(verb);
     const datas = await fetchWords();
     for (const data of datas) {
       for (const meanings of data.meanings) {
       const synonyms = meanings.synonyms;
-      console.log(meanings.partOfSpeech.includes('verb'));
         if(meanings.partOfSpeech === 'noun'){
           noun.style.display = 'block';
           if(meanings.definitions.length === 0){
@@ -176,7 +173,6 @@ async function renderMeanings() {
             }
            if(verbSynonymsContainer.innerText === ''){
             verbSynonymsList.style.display = 'none';
-            console.log('başarılı');
           } else{
             verbSynonymsList.style.display = 'flex';
           }
