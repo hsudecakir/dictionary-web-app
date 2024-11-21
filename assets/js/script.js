@@ -34,7 +34,7 @@ function changeFontFamily(){
 }
 
 async function fetchWords() {
-  const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${searchInput.value}`);
+  const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${(searchInput.value).toLowerCase()}`);
   const data = await response.json();
   return data;
 }
