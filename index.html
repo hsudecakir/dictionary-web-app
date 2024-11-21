@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/3ed2e8cef0.js" crossorigin="anonymous"></script>
+  <title>Dictionary</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/script.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo.svg" alt="Logo">
+      </div>
+      <div class="header__wrapper">
+        <div class="font-family">
+          <div class="selected-font-family">
+            <p id="fontFamilyTxt">Mono</p>
+            <img src="assets/images/arrow-down.svg" alt="arrow icon">
+          </div>
+          <div class="font-family-selection">
+            <p class="font-family-btn sans-serif-btn">Sans Serif</p>
+            <p class="font-family-btn serif-btn">Serif</p>
+            <p class="font-family-btn mono-btn">Mono</p>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="theme">
+          <input id="changeThemeBtn" type="checkbox">
+          <img class="light-mode__image" src="assets/images/dark-icon.png">
+          <img class="dark-mode__image" src="assets/images/dark-icon-active.svg">
+        </div>
+      </div>
+    </header>
+    <section class="search-input">
+      <input id="searchInput" type="text" placeholder="Search for any word…" autocomplete="off">
+      <span id="errorText">Whoops, can’t be empty…</span>
+      <img id="searchInputBtn" src="assets/images/icon_search.svg">
+    </section>
+    <div id="container">
+    </div>
+  </div>
+</body>
+</html>
