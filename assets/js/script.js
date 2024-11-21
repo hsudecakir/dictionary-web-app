@@ -45,16 +45,17 @@ async function findWord() {
   try {
     const datas = await fetchWords();
     for (const data of datas) {
+      console.log(data);
       if(data.word === searchInput.value){
         container.innerHTML = `
           <section class="word-container">
           <div class="word-container__wrapper">
             <p class="word">${data.word}</p>
-            <p class="phonetic-transcription">${data.phonetic}</p>
+            <p id="phoneticTranscription" class="phonetic-transcription"></p>
           </div>
           <span id="audioBtn"><i class="fa-solid fa-play"></i></span>
         </section>
-        <section class="noun">
+        <section class="noun" id="noun">
           <div class="noun-header">
             <p>noun</p>
             <div class="border"></div>
@@ -64,13 +65,13 @@ async function findWord() {
             <ul id="nounMeaningList">
             </ul>
           </div>
-          <div class="synonyms">
+          <div class="synonyms" id="nounSynonymsList">
             <p>Synonyms</p>
             <ul id="synonymsContainer">
             </ul>
           </div>
         </section>
-        <section class="verb">
+        <section class="verb" id="verb">
           <div class="verb-header">
             <p>verb</p>
             <div class="border"></div>
@@ -80,7 +81,7 @@ async function findWord() {
             <ul id="verbMeaningList">
             </ul>
           </div>
-          <div class="synonyms">
+          <div class="synonyms" id="verbSynonymsList">
             <p>Synonyms</p>
             <ul id="verbSynonymsContainer">
             </ul>
@@ -118,68 +119,98 @@ async function findWord() {
 
 async function renderMeanings() {
   try{
+    console.log(verb);
     const datas = await fetchWords();
-  for (const data of datas) {
-    for (const meanings of data.meanings) {
-    const synonyms = meanings.synonyms;
-      if(meanings.partOfSpeech === 'noun'){
-        for (const definitions of meanings.definitions) {
-          if(definitions.example == undefined){
-            nounMeaningList.innerHTML += `
-              <li><span></span>${definitions.definition}</li>
-            `
+    for (const data of datas) {
+      for (const meanings of data.meanings) {
+      const synonyms = meanings.synonyms;
+      console.log(meanings.partOfSpeech.includes('verb'));
+        if(meanings.partOfSpeech === 'noun'){
+          noun.style.display = 'block';
+          if(meanings.definitions.length === 0){
+            noun.style.display = 'none';
+          }
+          for (const definitions of meanings.definitions) {
+            if(definitions.example == undefined){
+              nounMeaningList.innerHTML += `
+                <li><span></span>${definitions.definition}</li>
+              `
+            } else{
+              nounMeaningList.innerHTML += `
+                <li><span></span>${definitions.definition}</li>
+                <li class="example"><span></span>“${definitions.example}”</li>
+              `
+            }
+          }
+          if(synonyms.length !== 0){
+            for (let i = 0; i < synonyms.length; i++) {
+              const isLast = i === synonyms.length - 1;
+              synonymsContainer.innerHTML += `
+                <li>${synonyms[i]}${isLast ? '' : ','}</li>
+              `
+            }
+          } else if(synonymsContainer.innerText === ''){
+            nounSynonymsList.style.display = 'none';
           } else{
-            nounMeaningList.innerHTML += `
-              <li><span></span>${definitions.definition}</li>
-              <li class="example"><span></span>“${definitions.example}”</li>
-            `
+            nounSynonymsList.style.display = 'flex';
+          }
+        } else if(meanings.partOfSpeech === 'verb'){
+          verb.style.display = 'block';
+          for (const definitions of meanings.definitions) {
+            if(definitions.example == undefined){
+              verbMeaningList.innerHTML += `
+                <li><span></span>${definitions.definition}</li>
+              `
+            } else{
+              verbMeaningList.innerHTML += `
+                <li><span></span>${definitions.definition}</li>
+                <li class="example"><span></span>“${definitions.example}”</li>
+              `
+            }
+          }
+            for (let i = 0; i < synonyms.length; i++) {
+              const isLast = i === synonyms.length - 1;
+              verbSynonymsContainer.innerHTML += `
+                <li>${synonyms[i]}${isLast ? '' : ','}</li>
+              `
+            }
+           if(verbSynonymsContainer.innerText === ''){
+            verbSynonymsList.style.display = 'none';
+            console.log('başarılı');
+          } else{
+            verbSynonymsList.style.display = 'flex';
           }
         }
-        for (let i = 0; i < synonyms.length; i++) {
-          const isLast = i === synonyms.length - 1;
-          synonymsContainer.innerHTML += `
-            <li>${synonyms[i]}${isLast ? '' : ','}</li>
+        if(nounMeaningList.innerText === ''){
+          noun.style.display = 'none';
+        }
+        if(verbMeaningList.innerText === ''){
+          verb.style.display = 'none';
+        }
+      }
+      for (const sources of data.sourceUrls) {
+        if (!sourceLinks.innerHTML.includes(`href="${sources}"`)) { 
+          sourceLinks.innerHTML += `
+            <div class="source-link__wrapper">
+              <a href="${sources}" target="_blank">${sources}</a>
+              <img src="assets/images/tabler_external-link.svg">
+            </div>
+          `;
+        }
+      }
+      for (const audios of data.phonetics) {
+        if(audios.audio !== ''){
+          audioBtn.innerHTML = `
+            <audio id="audioBtnSound" src="${audios.audio}"></audio><i class="fa-solid fa-play"></i>
           `
         }
-      } else if(meanings.partOfSpeech === 'verb'){
-        for (const definitions of meanings.definitions) {
-          if(definitions.example == undefined){
-            verbMeaningList.innerHTML += `
-              <li><span></span>${definitions.definition}</li>
-            `
-          } else{
-            verbMeaningList.innerHTML += `
-              <li><span></span>${definitions.definition}</li>
-              <li class="example"><span></span>“${definitions.example}”</li>
-            `
-          }
-        }
-        for (let i = 0; i < synonyms.length; i++) {
-          const isLast = i === synonyms.length - 1;
-          verbSynonymsContainer.innerHTML += `
-            <li>${synonyms[i]}${isLast ? '' : ','}</li>
-          `
+      }
+      for (const phonetic of data.phonetics) {
+        if(phonetic.text !== ''){
+          phoneticTranscription.innerText = `${phonetic.text}`;
         }
       }
     }
-    for (const sources of data.sourceUrls) {
-      if (!sourceLinks.innerHTML.includes(`href="${sources}"`)) { 
-        sourceLinks.innerHTML += `
-          <div class="source-link__wrapper">
-            <a href="${sources}" target="_blank">${sources}</a>
-            <img src="assets/images/tabler_external-link.svg">
-          </div>
-        `;
-      }
-    }
-    for (const audios of data.phonetics) {
-      if(audios.audio !== ''){
-        audioBtn.innerHTML = `
-          <audio id="audioBtnSound" src="${audios.audio}"></audio><i class="fa-solid fa-play"></i>
-        `
-      }
-    }
-  }
   }
   catch{
     
