@@ -34,7 +34,6 @@ function changeFontFamily(){
 }
 
 async function fetchWords() {
-  console.log(searchInput.value);
   const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${searchInput.value}`);
   const data = await response.json();
   return data;
@@ -43,67 +42,72 @@ async function fetchWords() {
 const searchInputContainer = document.querySelector('.search-input');
 
 async function findWord() {
-  const datas = await fetchWords();
-  for (const data of datas) {
-    if(data.word === searchInput.value){
-      container.innerHTML = `
-        <section class="word-container">
-        <div class="word-container__wrapper">
-          <p class="word">${data.word}</p>
-          <p class="phonetic-transcription">${data.phonetic}</p>
-        </div>
-        <span id="audioBtn"><i class="fa-solid fa-play"></i></span>
-      </section>
-      <section class="noun">
-        <div class="noun-header">
-          <p>noun</p>
-          <div class="border"></div>
-        </div>
-        <div class="noun-meaning-container">
-          <p>Meaning</p>
-          <ul id="nounMeaningList">
-          </ul>
-        </div>
-        <div class="synonyms">
-          <p>Synonyms</p>
-          <ul id="synonymsContainer">
-          </ul>
-        </div>
-      </section>
-      <section class="verb">
-        <div class="verb-header">
-          <p>verb</p>
-          <div class="border"></div>
-        </div>
-        <div class="verb-meaning-container">
-          <p>Meaning</p>
-          <ul id="verbMeaningList">
-          </ul>
-        </div>
-        <div class="synonyms">
-          <p>Synonyms</p>
-          <ul id="verbSynonymsContainer">
-          </ul>
-        </div>
-      </section>
-      <footer>
-        <p>Source</p>
-        <div id="sourceLinks" class="source-link">
-        </div>
-      </footer>
-      `
-      searchInputContainer.classList.remove('error');
-    } else if(searchInput.value === ''){
+  try {
+    const datas = await fetchWords();
+    for (const data of datas) {
+      if(data.word === searchInput.value){
+        container.innerHTML = `
+          <section class="word-container">
+          <div class="word-container__wrapper">
+            <p class="word">${data.word}</p>
+            <p class="phonetic-transcription">${data.phonetic}</p>
+          </div>
+          <span id="audioBtn"><i class="fa-solid fa-play"></i></span>
+        </section>
+        <section class="noun">
+          <div class="noun-header">
+            <p>noun</p>
+            <div class="border"></div>
+          </div>
+          <div class="noun-meaning-container">
+            <p>Meaning</p>
+            <ul id="nounMeaningList">
+            </ul>
+          </div>
+          <div class="synonyms">
+            <p>Synonyms</p>
+            <ul id="synonymsContainer">
+            </ul>
+          </div>
+        </section>
+        <section class="verb">
+          <div class="verb-header">
+            <p>verb</p>
+            <div class="border"></div>
+          </div>
+          <div class="verb-meaning-container">
+            <p>Meaning</p>
+            <ul id="verbMeaningList">
+            </ul>
+          </div>
+          <div class="synonyms">
+            <p>Synonyms</p>
+            <ul id="verbSynonymsContainer">
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <p>Source</p>
+          <div id="sourceLinks" class="source-link">
+          </div>
+        </footer>
+        `
+        searchInputContainer.classList.remove('error');
+      } 
+    }
+  } catch {
+    if(searchInput.value === ''){
       searchInputContainer.classList.add('error');
+      container.innerHTML = '';
     } else{
       container.innerHTML = `
-        <div class="error-page">
-          <img src="assets/images/emoji.png">
-          <p>No Definitions Found</p>
-          <p>Sorry pal, we couldn't find definitions for the word you were looking for. You can try the search again at later time or head to the web instead.</p>
-        </div>
-      `
-      searchInputContainer.classList.remove('error');
+          <div class="error-page">
+            <img src="assets/images/emoji.png">
+            <p>No Definitions Found</p>
+            <p>Sorry pal, we couldn't find definitions for the word you were looking for. You can try the search again at later time or head to the web instead.</p>
+          </div>
+        `
+        searchInputContainer.classList.remove('error');
     }
   }
   renderMeanings();
@@ -113,7 +117,8 @@ async function findWord() {
 }
 
 async function renderMeanings() {
-  const datas = await fetchWords();
+  try{
+    const datas = await fetchWords();
   for (const data of datas) {
     for (const meanings of data.meanings) {
     const synonyms = meanings.synonyms;
@@ -174,6 +179,10 @@ async function renderMeanings() {
         `
       }
     }
+  }
+  }
+  catch{
+    
   }
 }
 
