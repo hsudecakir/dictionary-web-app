@@ -34,7 +34,9 @@ function changeFontFamily(){
 }
 
 async function fetchWords() {
-  const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${(searchInput.value).toLowerCase()}`);
+  const inputValue = searchInput.value.trim().toLowerCase();
+  console.log(inputValue);
+  const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${inputValue}`);
   const data = await response.json();
   return data;
 }
@@ -44,8 +46,9 @@ const searchInputContainer = document.querySelector('.search-input');
 async function findWord() {
   try {
     const datas = await fetchWords();
+    const inputValue = searchInput.value.trim().toLowerCase();
     for (const data of datas) {
-      if(data.word === searchInput.value){
+      if(data.word === inputValue){
         container.innerHTML = `
           <section class="word-container">
           <div class="word-container__wrapper">
@@ -99,7 +102,8 @@ async function findWord() {
       audioBtnSound.play();
     });
   } catch {
-    if(searchInput.value === ''){
+    const inputValue = searchInput.value.trim().toLowerCase();
+    if(inputValue === ''){
       searchInputContainer.classList.add('error');
       container.innerHTML = '';
     } else{
