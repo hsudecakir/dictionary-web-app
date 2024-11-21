@@ -35,7 +35,6 @@ function changeFontFamily(){
 
 async function fetchWords() {
   const inputValue = searchInput.value.trim().toLowerCase();
-  console.log(inputValue);
   const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${inputValue}`);
   const data = await response.json();
   return data;
@@ -69,8 +68,7 @@ async function findWord() {
           </div>
           <div class="synonyms" id="nounSynonymsList">
             <p>Synonyms</p>
-            <ul id="synonymsContainer">
-            </ul>
+            <ul id="synonymsContainer"></ul>
           </div>
         </section>
         <section class="verb" id="verb">
@@ -85,8 +83,7 @@ async function findWord() {
           </div>
           <div class="synonyms" id="verbSynonymsList">
             <p>Synonyms</p>
-            <ul id="verbSynonymsContainer">
-            </ul>
+            <ul id="verbSynonymsContainer"></ul>
           </div>
         </section>
         <footer>
