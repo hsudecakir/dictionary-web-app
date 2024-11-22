@@ -83,7 +83,7 @@ async function fetchWords() {
 }
 
 async function findWord(e) {
-  e.preventDefault();
+  if(e && e.preventDefault)e.preventDefault();
   const searchInputContainer = document.querySelector('.search-input');
   try {
     const datas = await fetchWords();
@@ -247,14 +247,35 @@ async function renderMeanings() {
       for (const phonetic of data.phonetics) {
         if(phonetic.text !== ''){
           phoneticTranscription.innerText = `${phonetic.text}`;
+        } else if(phonetic.text === undefined){
+          phoneticTranscription.innerText = '';
         }
       }
     }
-    const synonymsLinks = document.querySelectorAll('.synonyms-txt');
+    addSynonymClickEvents();
   }
   catch{
     
   }
+}
+
+function addSynonymClickEvents() {
+  const synonymsLinks = document.querySelectorAll('.synonyms-txt');
+  for (const synonym of synonymsLinks) {
+    synonym.addEventListener('click', findSynonym);
+  }
+}
+
+async function findSynonym() {
+  const synonymWord = this.innerText.trim().toLowerCase();
+  if(synonymWord.includes(',')){
+    searchInput.value = synonymWord.slice(0, -1);
+  } else{
+    searchInput.value = synonymWord;
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  fetchWords();
+  findWord();
 }
 
 

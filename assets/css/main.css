@@ -539,6 +539,10 @@ body.dark-mode .error-page p{
   color: var(--gray);
 }
 
+.synonyms-txt{
+  cursor: pointer;
+}
+
 @media only screen and (min-width: 768px){
   .container{
     padding: 58px 39px 58px 40px;
