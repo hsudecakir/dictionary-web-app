@@ -35,9 +35,11 @@
       </div>
     </header>
     <section class="search-input">
-      <input id="searchInput" type="text" placeholder="Search for any word…" autocomplete="off">
-      <span id="errorText">Whoops, can’t be empty…</span>
-      <img id="searchInputBtn" src="assets/images/icon_search.svg">
+      <form method="get" id="searchForm">
+        <input id="searchInput" name="word" type="text" placeholder="Search for any word…" autocomplete="off">
+        <span id="errorText">Whoops, can’t be empty…</span>
+        <img id="searchInputBtn" src="assets/images/icon_search.svg">
+      </form>
     </section>
     <div id="container">
     </div>

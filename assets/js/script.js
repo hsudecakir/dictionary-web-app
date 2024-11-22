@@ -1,11 +1,50 @@
-changeThemeBtn.addEventListener('input', changeTheme);
+function init(){
+  changeThemeBtn.addEventListener('input', changeTheme);
+  searchInputBtn.addEventListener('click', findWord);
+  searchForm.addEventListener('submit', findWord);
+  searchInput.addEventListener('input', () => {
+    searchInput.value = searchInput.value.replace(/[^a-zA-Z]/g, "");
+  })
+  checkLocalStorage();
+}
+
+function checkLocalStorage(){
+    const theme = localStorage.getItem('theme');
+    if(theme){
+      if(theme === 'darkMode'){
+        document.body.classList = 'dark-mode';
+        changeThemeBtn.setAttribute('checked', '');
+      }
+    } else{
+      if(window.matchMedia(('(prefers-color-scheme : dark)')).matches){
+        document.body.classList = 'dark-mode';
+        changeThemeBtn.setAttribute('checked', '');
+      }
+    }
+    const font = localStorage.getItem('font');
+    if(font){
+      if(font === 'serif'){
+        document.body.classList.add('serif');
+        fontFamilyTxt.innerText = 'Serif';
+      } else if(font === 'sansSerif'){
+        document.body.classList.add('sans-serif');
+        fontFamilyTxt.innerText = 'Sans Serif';
+      } else{
+        fontFamilyTxt.innerText = 'Mono';
+      }
+    }
+}
 
 function changeTheme(){
   document.body.classList.toggle('dark-mode');
+  if(document.body.classList.contains('dark-mode')){
+    localStorage.setItem('theme', 'darkMode');
+  } else{
+    localStorage.setItem('theme', 'lightMode');
+  }
 }
 
 const fontFamilySelectionBtnContainer = document.querySelector('.font-family');
-
 fontFamilySelectionBtnContainer.addEventListener('click', showFonts);
 
 function showFonts(){
@@ -25,11 +64,14 @@ function changeFontFamily(){
   if(this.innerText === 'Sans Serif'){
     document.body.classList.add('sans-serif');
     fontFamilyTxt.innerText = 'Sans Serif';
+    localStorage.setItem('font', 'sansSerif');
   } else if(this.innerText === 'Serif'){
     document.body.classList.add('serif');
     fontFamilyTxt.innerText = 'Serif';
+    localStorage.setItem('font', 'serif');
   } else{
     fontFamilyTxt.innerText = 'Mono';
+    localStorage.setItem('font', 'mono');
   }
 }
 
@@ -40,9 +82,9 @@ async function fetchWords() {
   return data;
 }
 
-const searchInputContainer = document.querySelector('.search-input');
-
-async function findWord() {
+async function findWord(e) {
+  e.preventDefault();
+  const searchInputContainer = document.querySelector('.search-input');
   try {
     const datas = await fetchWords();
     const inputValue = searchInput.value.trim().toLowerCase();
@@ -144,7 +186,7 @@ async function renderMeanings() {
             for (let i = 0; i < synonyms.length; i++) {
               const isLast = i === synonyms.length - 1;
               synonymsContainer.innerHTML += `
-                <li>${synonyms[i]}${isLast ? '' : ','}</li>
+                <li class="synonyms-txt">${synonyms[i]}${isLast ? '' : ','}</li>
               `
             }
           } else if(synonymsContainer.innerText === ''){
@@ -169,7 +211,7 @@ async function renderMeanings() {
             for (let i = 0; i < synonyms.length; i++) {
               const isLast = i === synonyms.length - 1;
               verbSynonymsContainer.innerHTML += `
-                <li>${synonyms[i]}${isLast ? '' : ','}</li>
+                <li class="synonyms-txt">${synonyms[i]}${isLast ? '' : ','}</li>
               `
             }
            if(verbSynonymsContainer.innerText === ''){
@@ -208,11 +250,12 @@ async function renderMeanings() {
         }
       }
     }
+    const synonymsLinks = document.querySelectorAll('.synonyms-txt');
   }
   catch{
     
   }
 }
 
-searchInputBtn.addEventListener('click', findWord);
 
+init();
