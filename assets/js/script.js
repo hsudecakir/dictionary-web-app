@@ -245,9 +245,9 @@ async function renderMeanings() {
         }
       }
       for (const phonetic of data.phonetics) {
-        if(phonetic.text !== ''){
+        if('text' in phonetic && phonetic.text !== ''){
           phoneticTranscription.innerText = `${phonetic.text}`;
-        } else if(phonetic.text === undefined){
+        } else {
           phoneticTranscription.innerText = '';
         }
       }
